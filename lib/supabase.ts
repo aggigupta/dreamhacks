@@ -9,7 +9,16 @@ const key =
  * Server-side Supabase client. Null when env vars are absent — callers fall back
  * to the in-process store so the app still runs offline / in CI.
  */
-export const supabase: SupabaseClient | null =
-  url && key ? createClient(url, key, { auth: { persistSession: false } }) : null;
+function makeClient(): SupabaseClient | null {
+  if (!url || !key) return null;
+  try {
+    return createClient(url, key, { auth: { persistSession: false } });
+  } catch {
+    // Malformed URL/key: fall back to the in-process store rather than crash.
+    return null;
+  }
+}
+
+export const supabase: SupabaseClient | null = makeClient();
 
 export const supabaseReady = supabase !== null;
