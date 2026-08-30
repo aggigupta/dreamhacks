@@ -17,10 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="text-slate-800 antialiased min-h-screen flex flex-col selection:bg-[#55AEB1] selection:text-white relative">
-        {/* Natural Flowing Turquoise Ocean Water Background - Zero Artificial Bubble Rings */}
-        <div className="natural-water-bg" aria-hidden="true">
-          <div className="water-photo-layer" />
-          <div className="water-photo-drift" />
+        {/* Living turquoise-ocean backdrop, softened by a frosted-glass layer so
+            every surface on top stays fully legible. */}
+        <div className="ocean-bg" aria-hidden="true">
+          <div className="ocean-bg__base" />
+          <div className="ocean-bg__sheen" />
         </div>
 
         <Providers>

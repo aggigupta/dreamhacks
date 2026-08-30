@@ -52,7 +52,7 @@ export default function RecommendationsPage() {
     : allProducts.slice(0, 6);
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 bg-[#FAFAF8]">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Header Banner */}
       <div className="bg-white p-8 sm:p-12 rounded-2xl border border-slate-200 shadow-[0_8px_30px_rgba(8,43,92,0.04)] flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">

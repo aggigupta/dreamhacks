@@ -53,9 +53,66 @@
     background: #55AEB1;
     color: #fff;
   }
+}
 
-  /* Legacy hook from an earlier build; kept hidden. */
-  .natural-water-bg { display: none !important; }
+/* ---- Living ocean backdrop ------------------------------------------------ */
+
+.ocean-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -20;
+  overflow: hidden;
+  background: #0c4c55; /* deep water, shows before the image loads */
+  pointer-events: none;
+}
+
+.ocean-bg__base,
+.ocean-bg__sheen {
+  position: absolute;
+  inset: -8%;
+  background-image: url("/ocean.webp");
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+.ocean-bg__base {
+  animation: oceanDrift 46s ease-in-out infinite alternate;
+}
+
+.ocean-bg__sheen {
+  mix-blend-mode: soft-light;
+  opacity: 0.45;
+  animation: oceanSheen 64s ease-in-out infinite alternate-reverse;
+}
+
+/* Frosted-glass veil: lighter at the very top so the water reads as motion
+   behind the header, near-opaque lower down so all content stays crisp. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  backdrop-filter: blur(4px) saturate(1.04);
+  -webkit-backdrop-filter: blur(4px) saturate(1.04);
+  background: linear-gradient(
+    to bottom,
+    rgba(247, 246, 242, 0.4) 0%,
+    rgba(247, 246, 242, 0.66) 22%,
+    rgba(247, 246, 242, 0.74) 60%,
+    rgba(247, 246, 242, 0.78) 100%
+  );
+}
+
+@keyframes oceanDrift {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to   { transform: scale(1.16) translate3d(-3.5%, -2.6%, 0); }
+}
+
+@keyframes oceanSheen {
+  from { transform: scale(1.16) translate3d(0, 0, 0); }
+  to   { transform: scale(1.3) translate3d(4%, 2%, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
