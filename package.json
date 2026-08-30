@@ -1,0 +1,37 @@
+{
+  "name": "shopsense-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest run",
+    "calibrate": "tsx scripts/calibrate.ts"
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5",
+    "@supabase/supabase-js": "^2.112.4",
+    "@tailwindcss/postcss": "^4.3.3",
+    "jose": "^6.2.10",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^1.37.0",
+    "next": "^15.1.6",
+    "nodemailer": "^9.0.6",
+    "openai": "^4.77.0",
+    "postcss": "^8.5.26",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.3.3",
+    "vitest": "^4.1.11"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "tsx": "^4.23.13",
+    "typescript": "^5"
+  }
+}

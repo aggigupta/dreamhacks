@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: shopyland-storefront
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      # Supabase (project: dreamhacks). The anon/publishable key is safe to ship —
+      # it is RLS-gated and already lives in the browser bundle by design.
+      - key: SUPABASE_URL
+        value: https://auxktwlvncfjxxhvzvpm.supabase.co
+      - key: SUPABASE_ANON_KEY
+        value: sb_publishable_nBHt29eWjmg-mI7hiMIlFw_8Vfy9SMb
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        value: https://auxktwlvncfjxxhvzvpm.supabase.co
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        value: sb_publishable_nBHt29eWjmg-mI7hiMIlFw_8Vfy9SMb
+      # Optional — real OTP email. Leave unset to use a test inbox.
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
