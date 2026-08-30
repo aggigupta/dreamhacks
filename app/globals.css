@@ -86,22 +86,22 @@
   animation: oceanSheen 64s ease-in-out infinite alternate-reverse;
 }
 
-/* Frosted-glass veil: lighter at the very top so the water reads as motion
-   behind the header, near-opaque lower down so all content stays crisp. */
+/* Soft veil over the (already-blurred) water: lighter up top so the ocean
+   reads as motion behind the header, calmer lower down so content stays crisp.
+   No backdrop-filter — the image itself carries the blur, which keeps scrolling
+   smooth. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -10;
   pointer-events: none;
-  backdrop-filter: blur(4px) saturate(1.04);
-  -webkit-backdrop-filter: blur(4px) saturate(1.04);
   background: linear-gradient(
     to bottom,
-    rgba(247, 246, 242, 0.4) 0%,
-    rgba(247, 246, 242, 0.66) 22%,
-    rgba(247, 246, 242, 0.74) 60%,
-    rgba(247, 246, 242, 0.78) 100%
+    rgba(247, 246, 242, 0.26) 0%,
+    rgba(247, 246, 242, 0.5) 24%,
+    rgba(247, 246, 242, 0.58) 60%,
+    rgba(247, 246, 242, 0.62) 100%
   );
 }
 
@@ -184,6 +184,82 @@ body::before {
 
 @keyframes routeFlow {
   to { stroke-dashoffset: -18; }
+}
+
+/* ---- Motion ---------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.animate-float {
+  animation: float 7s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Animated gradient accent for a headline word. */
+.gradient-text {
+  background: linear-gradient(100deg, #8fe0e2, #5fd0d3 45%, #a7f3d0 70%, #8fe0e2);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradientShift 8s ease-in-out infinite;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Flowing water inside the cargo fill. */
+@keyframes cargoWave {
+  from { background-position: 0 0; }
+  to { background-position: 44px 0; }
+}
+.cargo-fill {
+  background-image:
+    linear-gradient(90deg, #55AEB1, #34d399),
+    repeating-linear-gradient(115deg, rgba(255,255,255,0.22) 0 8px, rgba(255,255,255,0) 8px 22px);
+  background-blend-mode: overlay;
+  animation: cargoWave 1.1s linear infinite;
+}
+
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0.5); }
+  70% { box-shadow: 0 0 0 8px rgba(52, 211, 153, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+}
+.pulse-once { animation: pulseRing 0.9s ease-out; }
+
+@keyframes heroIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.hero-in > * {
+  opacity: 0;
+  animation: heroIn 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.hero-in > *:nth-child(1) { animation-delay: 0.05s; }
+.hero-in > *:nth-child(2) { animation-delay: 0.15s; }
+.hero-in > *:nth-child(3) { animation-delay: 0.25s; }
+.hero-in > *:nth-child(4) { animation-delay: 0.35s; }
+.hero-in > *:nth-child(5) { animation-delay: 0.45s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-float, .gradient-text, .cargo-fill, .hero-in > * { animation: none; }
+  .hero-in > * { opacity: 1; }
+  .gradient-text { color: #8fe0e2; }
 }
 
 /* Subtle scrollbar */

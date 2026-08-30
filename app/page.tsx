@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Compass, Sparkles, ShoppingBag, ArrowRight, Play, Pause, Plus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Reveal";
 
 export default function HomePage() {
   const { allProducts } = useCart();
@@ -57,17 +58,15 @@ export default function HomePage() {
           <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#04122b]/90 via-[#04122b]/45 to-transparent" />
 
           <div className="relative w-full p-6 sm:p-10 lg:p-14">
-            <div className="max-w-2xl space-y-6">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#55AEB1]/20 text-[#8fe0e2] border border-[#55AEB1]/30 text-xs font-semibold uppercase tracking-wider backdrop-blur-sm">
+            <div className="hero-in max-w-2xl space-y-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#55AEB1]/20 text-[#8fe0e2] border border-[#55AEB1]/30 text-xs font-semibold uppercase tracking-wider backdrop-blur-sm animate-float">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Direct-from-island micro-producers · zero-carbon freight</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-normal leading-tight tracking-tight text-white">
                 Handcrafted on the Islands. <br />
-                <span className="text-[#8fe0e2] italic font-serif">
-                  Shipped Globally.
-                </span>
+                <span className="gradient-text italic font-serif">Shipped Globally.</span>
               </h1>
 
               <p className="text-sm sm:text-base text-slate-200 leading-relaxed max-w-xl font-normal">
@@ -76,22 +75,20 @@ export default function HomePage() {
 
               {/* How it works */}
               <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/10 max-w-md">
-                <div className="bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-md">
-                  <span className="text-lg sm:text-xl font-serif font-bold text-[#8fe0e2]">4 signals</span>
-                  <span className="text-[10px] text-slate-300 block uppercase font-medium">Explainable AI match, no black box</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-md">
-                  <span className="text-lg sm:text-xl font-serif font-bold text-emerald-400">Traceable</span>
-                  <span className="text-[10px] text-slate-300 block uppercase font-medium">Every pick names the signal behind it</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-md">
-                  <span className="text-lg sm:text-xl font-serif font-bold text-[#8fe0e2]">−20%</span>
-                  <span className="text-[10px] text-slate-300 block uppercase font-medium">Freight discount when the ferry fills</span>
-                </div>
-                <div className="bg-white/5 p-3 rounded-2xl border border-white/10 backdrop-blur-md">
-                  <span className="text-lg sm:text-xl font-serif font-bold text-emerald-400">100%</span>
-                  <span className="text-[10px] text-slate-300 block uppercase font-medium">Order value paid direct to the artisan</span>
-                </div>
+                {[
+                  { v: "4 signals", l: "Explainable AI match, no black box", c: "text-[#8fe0e2]" },
+                  { v: "Traceable", l: "Every pick names the signal behind it", c: "text-emerald-400" },
+                  { v: "−20%", l: "Freight discount when the ferry fills", c: "text-[#8fe0e2]" },
+                  { v: "100%", l: "Order value paid direct to the artisan", c: "text-emerald-400" },
+                ].map((s) => (
+                  <div
+                    key={s.l}
+                    className="rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/10"
+                  >
+                    <span className={`block font-serif text-lg font-bold sm:text-xl ${s.c}`}>{s.v}</span>
+                    <span className="block text-[10px] font-medium uppercase text-slate-300">{s.l}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -127,7 +124,7 @@ export default function HomePage() {
 
       {/* Featured Products Showcase */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/30 pb-4">
+        <Reveal className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
           <div>
             <h2 className="text-3xl font-serif font-bold text-[#082B5C] tracking-tight">Featured Island Crafts</h2>
             <p className="text-xs text-slate-500 font-medium">Authentic goods direct from North Atoll and South Shore cooperatives.</p>
@@ -139,17 +136,19 @@ export default function HomePage() {
             <ShoppingBag className="w-4 h-4 text-[#55AEB1]" />
             <span>Explore the Collection</span>
           </Link>
-        </div>
+        </Reveal>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
+          {featuredProducts.map((p, i) => (
+            <Reveal key={p.id} delay={i * 70}>
+              <ProductCard product={p} />
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+      <Reveal as="section" className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center space-y-1">
           <span className="text-xs font-mono text-[#55AEB1] font-bold uppercase tracking-wider">
             Good to know
@@ -200,7 +199,7 @@ export default function HomePage() {
             </details>
           ))}
         </div>
-      </section>
+      </Reveal>
     </main>
   );
 }

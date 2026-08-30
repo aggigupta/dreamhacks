@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Store, Search, Filter, PlusCircle } from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Reveal";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -97,8 +98,10 @@ export default function BrowsePage() {
       {/* Product Grid */}
       {filteredProducts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((p) => (
-            <ProductCard key={p.id} product={p} />
+          {filteredProducts.map((p, i) => (
+            <Reveal key={p.id} delay={Math.min(i, 8) * 55}>
+              <ProductCard product={p} />
+            </Reveal>
           ))}
         </div>
       ) : (

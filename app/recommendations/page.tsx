@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Sparkles, RefreshCw, Compass, ShieldCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { ProductCard } from "@/components/ProductCard";
+import { Reveal } from "@/components/Reveal";
 import type { Product, RecommendResponse } from "@/lib/types";
 
 export default function RecommendationsPage() {
@@ -153,7 +154,9 @@ export default function RecommendationsPage() {
       {!loading && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayProducts.map((p, idx) => (
-            <ProductCard key={p.id} product={p} reason={recoMap.get(p.id)} rank={idx + 1} />
+            <Reveal key={p.id} delay={idx * 80}>
+              <ProductCard product={p} reason={recoMap.get(p.id)} rank={idx + 1} />
+            </Reveal>
           ))}
         </div>
       )}
