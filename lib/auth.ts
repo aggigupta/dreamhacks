@@ -2,8 +2,10 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { db, type DbUser } from "./db";
 
+// Set JWT_SECRET in the deploy environment. The literal below is only a
+// local-dev fallback so the app runs without configuration.
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "shopyland-secret-key-change-in-production-2026"
+  process.env.JWT_SECRET || "shopyland-local-dev-only-not-a-secret"
 );
 
 const COOKIE_NAME = "shopyland_session";

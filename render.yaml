@@ -12,6 +12,9 @@ services:
         sync: false
       - key: OPENAI_MODEL
         value: gpt-4o-mini
+      # Signs the session cookie. Set a long random string in the Render dashboard.
+      - key: JWT_SECRET
+        sync: false
       # Supabase (project: dreamhacks). The anon/publishable key is safe to ship —
       # it is RLS-gated and already lives in the browser bundle by design.
       - key: SUPABASE_URL
