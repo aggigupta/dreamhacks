@@ -1,147 +1,142 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+
+  --color-ink: #0f2b45;
+  --color-ink-soft: #4a5b6b;
+  --color-teal: #2f8f92;
+  --color-teal-ink: #0d5f61;
+  --color-paper: #f6f5f1;
+  --color-line: #e6e3db;
+}
+
+:root {
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-pill: 9999px;
+  --shadow-card: 0 1px 2px rgba(15, 43, 69, 0.05), 0 10px 30px -12px rgba(15, 43, 69, 0.14);
+  --shadow-card-hover: 0 2px 6px rgba(15, 43, 69, 0.06), 0 18px 40px -14px rgba(15, 43, 69, 0.2);
+}
+
 @layer base {
-  body {
-    background: #F5F5F1;
-    color: #082B5C;
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
+  html {
+    scroll-behavior: smooth;
   }
 
-  /* Kill the animated ocean background — it fought readability. Solid ground. */
-  .natural-water-bg { display: none !important; }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
 
   h1, h2, h3, h4, .font-heading {
-    font-family: 'Playfair Display', Georgia, serif;
-    letter-spacing: -0.02em;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-ink);
+  }
+
+  /* Visible, on-brand focus ring for keyboard users. */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-teal);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: #55AEB1;
+    color: #fff;
+  }
+
+  /* Legacy hook from an earlier build; kept hidden. */
+  .natural-water-bg { display: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* Natural Flowing Turquoise Ocean Water Background - Zero Artificial Bubbles */
-.natural-water-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -20;
-  overflow: hidden;
-  background-color: #032030;
-}
+/* ---- Components -------------------------------------------------------- */
 
-/* Pristine Full-Screen Real Water Photo Layer */
-.water-photo-layer {
-  position: absolute;
-  inset: -80px;
-  background-image: url('/water-bg.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: brightness(0.92) contrast(1.08) saturate(1.15);
-  animation: naturalOceanFlow 22s ease-in-out infinite alternate;
-}
-
-/* Secondary Smooth Ocean Drift Layer */
-.water-photo-drift {
-  position: absolute;
-  inset: -120px;
-  background-image: url('/water-bg.png');
-  background-size: 115% 115%;
-  background-position: center;
-  background-repeat: no-repeat;
-  mix-blend-mode: soft-light;
-  opacity: 0.55;
-  animation: naturalOceanDrift 28s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes naturalOceanFlow {
-  0% {
-    transform: scale(1.05) translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.12) translate(-30px, -20px) rotate(1deg);
-  }
-  100% {
-    transform: scale(1.07) translate(25px, 15px) rotate(-0.5deg);
-  }
-}
-
-@keyframes naturalOceanDrift {
-  0% {
-    transform: scale(1.08) translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.03) translate(35px, -25px) rotate(-1deg);
-  }
-  100% {
-    transform: scale(1.1) translate(-20px, 20px) rotate(0.8deg);
-  }
-}
-
-/* Button & Card Micro-Interactions */
 .btn-navy {
-  background-color: #082B5C;
-  color: #ffffff;
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--color-ink);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
 }
-
 .btn-navy:hover {
-  background-color: #062047;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(8, 43, 92, 0.35);
+  background-color: #0a2138;
+  box-shadow: 0 6px 18px -6px rgba(15, 43, 69, 0.4);
 }
-
-.btn-navy:active {
-  transform: scale(0.95);
-}
+.btn-navy:active { transform: translateY(1px); }
 
 .btn-teal {
-  background-color: #55AEB1;
-  color: #ffffff;
-  border-radius: 9999px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: var(--color-teal);
+  color: #fff;
+  border-radius: var(--radius-pill);
+  transition: background-color 0.18s ease, box-shadow 0.18s ease, transform 0.12s ease;
 }
-
 .btn-teal:hover {
-  background-color: #44979A;
+  background-color: #26787b;
+  box-shadow: 0 6px 18px -6px rgba(47, 143, 146, 0.5);
+}
+.btn-teal:active { transform: translateY(1px); }
+
+/* Static content panel. */
+.card-light,
+.card {
+  background-color: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+}
+
+/* Interactive card (product tiles). Add `.card-interactive` for the hover lift. */
+.card-interactive {
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+.card-interactive:hover {
+  border-color: #d6d1c4;
+  box-shadow: var(--shadow-card-hover);
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(85, 174, 177, 0.45);
-}
-
-.btn-teal:active {
-  transform: scale(0.95);
-}
-
-.card-light {
-  background-color: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  border-radius: 24px;
-  box-shadow: 0 12px 36px rgba(6, 40, 60, 0.16);
-  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card-light:hover {
-  transform: scale(1.03);
-  box-shadow: 0 24px 50px rgba(6, 40, 60, 0.26);
-  background-color: rgba(255, 255, 255, 0.95);
 }
 
 .badge-teal {
-  background-color: rgba(85, 174, 177, 0.18);
-  color: #082B5C;
-  border: 1px solid rgba(85, 174, 177, 0.4);
+  background-color: rgba(47, 143, 146, 0.12);
+  color: var(--color-teal-ink);
+  border: 1px solid rgba(47, 143, 146, 0.28);
 }
 
 .ai-reason-box {
-  background-color: rgba(248, 250, 252, 0.92);
-  border: 1px solid #e2e8f0;
-  border-left: 4px solid #55AEB1;
-  border-radius: 12px;
+  background-color: #f3faf9;
+  border: 1px solid rgba(47, 143, 146, 0.25);
+  border-left: 3px solid var(--color-teal);
+  border-radius: var(--radius-sm);
 }
 
 @keyframes routeFlow {
   to { stroke-dashoffset: -18; }
+}
+
+/* Subtle scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c9c4b7 transparent;
+}
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb {
+  background: #c9c4b7;
+  border-radius: 9999px;
+  border: 2px solid var(--color-paper);
 }

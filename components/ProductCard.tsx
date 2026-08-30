@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Leaf, ShoppingBag, Sparkles, MapPin, Sprout } from "lucide-react";
+import { Leaf, ShoppingBag, Sparkles, Sprout } from "lucide-react";
 import type { Product } from "@/lib/types";
 import { useCart } from "@/context/CartContext";
 
@@ -16,117 +16,100 @@ export function ProductCard({ product, reason }: ProductCardProps) {
   const { addToCart } = useCart();
   const [imgError, setImgError] = useState(false);
   const displayPrice = product.price ?? product.basePrice ?? 0;
+  const hubShort = product.atollHub?.split(" ")[0];
 
   return (
-    <div className="card-light flex flex-col justify-between overflow-hidden group relative transition-all duration-500 hover:scale-[1.03] shadow-[0_8px_30px_rgba(8,43,92,0.04)] bg-white rounded-2xl border border-slate-200">
-      {/* Overlapping Eco Badge on Top Left */}
-      {product.ecoTag && (
-        <div className="absolute top-3 left-3 z-20">
-          <span className="px-3 py-1 rounded-full bg-emerald-700 text-white text-[11px] font-medium flex items-center gap-1 shadow-sm">
-            <Leaf className="w-3 h-3" />
-            {product.ecoTag}
-          </span>
-        </div>
-      )}
-
-      {/* Atoll Hub Badge on Top Right */}
-      {product.atollHub && (
-        <div className="absolute top-3 right-3 z-20">
-          <span className="px-3 py-1 rounded-full bg-[#082B5C] text-white text-[10px] font-mono font-medium flex items-center gap-1 shadow-sm">
-            <MapPin className="w-3 h-3 text-[#55AEB1]" />
-            {product.atollHub.split(" ")[0]} Hub
-          </span>
-        </div>
-      )}
-
-      {/* Product Image Container */}
-      <Link href={`/product/${product.id}`} className="block relative bg-slate-100 overflow-hidden pt-[65%]">
+    <div className="card card-interactive group flex flex-col overflow-hidden">
+      {/* Image */}
+      <Link
+        href={`/product/${product.id}`}
+        className="relative block overflow-hidden bg-slate-100 pt-[62%]"
+      >
         {product.image && !imgError ? (
           <img
             src={product.image}
             alt={product.name}
             onError={() => setImgError(true)}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-4xl font-serif text-[#082B5C]/30">
+          <div className="absolute inset-0 flex items-center justify-center font-serif text-5xl text-[#0f2b45]/25">
             {product.name.charAt(0)}
           </div>
         )}
-      </Link>
 
-      {/* Body Content */}
-      <div className="p-5 space-y-3 flex-grow flex flex-col justify-between">
-        <div className="space-y-2">
-          {/* Artisan Avatar & Name */}
-          {product.seller && (
-            <div className="flex items-center gap-2">
-              {product.sellerAvatar ? (
-                <img
-                  src={product.sellerAvatar}
-                  alt={product.seller}
-                  className="w-6 h-6 rounded-full object-cover border border-slate-200"
-                />
-              ) : (
-                <div className="w-6 h-6 rounded-full bg-[#082B5C] text-white flex items-center justify-center text-[10px] font-bold">
-                  {product.seller.charAt(0)}
-                </div>
-              )}
-              <Link
-                href={`/seller/${product.sellerId || "mayas-kitchen"}`}
-                className="text-xs font-medium text-slate-600 hover:text-[#082B5C] transition-colors"
-              >
-                {product.seller}
-              </Link>
-            </div>
+        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+          {product.ecoTag && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-semibold text-emerald-800 shadow-sm backdrop-blur">
+              <Leaf className="h-3 w-3 text-emerald-600" />
+              {product.ecoTag}
+            </span>
           )}
-
-          <Link href={`/product/${product.id}`} className="block group-hover:text-[#55AEB1] transition-colors">
-            <h3 className="font-serif font-bold text-xl text-[#082B5C] leading-snug tracking-tight line-clamp-1">
-              {product.name}
-            </h3>
-          </Link>
-
-          {/* Material Transparency Index Badge */}
-          {product.materialIndex && (
-            <div className="text-[11px] font-mono text-[#082B5C] bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200 inline-block">
-              Material: {product.materialIndex}
-            </div>
-          )}
-
-          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed font-normal">
-            {product.description}
-          </p>
-
-          {/* Micro-Replanting Impact Badge */}
-          {product.replantingImpact && (
-            <div className="p-2.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-emerald-900 text-[11px] font-medium flex items-center gap-1.5">
-              <Sprout className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Funds {product.replantingImpact} in artisan village.</span>
-            </div>
+          {hubShort && (
+            <span className="rounded-full bg-white/95 px-2.5 py-1 text-[10px] font-semibold text-[#0f2b45] shadow-sm backdrop-blur">
+              {hubShort} Hub
+            </span>
           )}
         </div>
+      </Link>
 
-        {/* AI Reason Callout */}
-        {reason && (
-          <div className="ai-reason-box p-3 text-xs text-[#082B5C] mt-2">
-            <div className="font-semibold flex items-center gap-1 text-[#55AEB1] text-[11px] mb-0.5">
-              <Sparkles className="w-3 h-3" />
-              <span>Signal Fit Reason</span>
-            </div>
-            <p className="text-slate-700 italic text-[11px] leading-snug font-normal">
-              "{reason}"
-            </p>
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-5">
+        {product.seller && (
+          <Link
+            href={`/seller/${product.sellerId || "mayas-kitchen"}`}
+            className="mb-2 flex items-center gap-2 text-xs font-medium text-slate-500 transition-colors hover:text-[#0f2b45]"
+          >
+            {product.sellerAvatar ? (
+              <img
+                src={product.sellerAvatar}
+                alt=""
+                className="h-5 w-5 rounded-full border border-slate-200 object-cover"
+              />
+            ) : (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#0f2b45] text-[9px] font-bold text-white">
+                {product.seller.charAt(0)}
+              </span>
+            )}
+            {product.seller}
+          </Link>
+        )}
+
+        <Link href={`/product/${product.id}`}>
+          <h3 className="font-serif text-lg font-semibold leading-snug text-[#0f2b45] transition-colors group-hover:text-[#2f8f92] line-clamp-1">
+            {product.name}
+          </h3>
+        </Link>
+
+        <p className="mt-1.5 text-xs leading-relaxed text-slate-500 line-clamp-2">
+          {product.description}
+        </p>
+
+        {product.replantingImpact && (
+          <div className="mt-3 flex items-center gap-1.5 rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] font-medium text-emerald-900">
+            <Sprout className="h-3.5 w-3.5 shrink-0 text-emerald-600" />
+            <span className="line-clamp-1">Funds {product.replantingImpact}</span>
           </div>
         )}
 
-        {/* Pricing & CTA */}
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between mt-auto">
+        {reason && (
+          <div className="ai-reason-box mt-3 p-2.5">
+            <div className="mb-0.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-[#2f8f92]">
+              <Sparkles className="h-3 w-3" />
+              Why this pick
+            </div>
+            <p className="text-[11px] italic leading-snug text-slate-700">{reason}</p>
+          </div>
+        )}
+
+        <div className="mt-auto flex items-center justify-between border-t border-slate-100 pt-4">
           <div>
-            <span className="text-[11px] text-slate-400 block font-normal">Price</span>
-            <span className="text-lg font-serif font-bold text-[#082B5C]">
+            <span className="block text-[10px] uppercase tracking-wide text-slate-400">Price</span>
+            <span className="font-serif text-lg font-semibold text-[#0f2b45]">
               ${displayPrice}
-              {product.unit && <span className="text-xs text-slate-500 font-normal font-sans"> /{product.unit}</span>}
+              {product.unit && (
+                <span className="font-sans text-xs font-normal text-slate-500"> /{product.unit}</span>
+              )}
             </span>
           </div>
 
@@ -135,10 +118,10 @@ export function ProductCard({ product, reason }: ProductCardProps) {
               e.preventDefault();
               addToCart(product, 1);
             }}
-            className="btn-navy px-4 py-2 rounded-full text-xs font-medium flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
+            className="btn-navy flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold"
           >
-            <ShoppingBag className="w-3.5 h-3.5 text-[#55AEB1]" />
-            <span>Add to Shared Crate</span>
+            <ShoppingBag className="h-3.5 w-3.5 text-[#8fd6d8]" />
+            Add to crate
           </button>
         </div>
       </div>

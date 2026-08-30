@@ -1,25 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420" width="640" height="420">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="bg" x1="0" y1="0" x2="0.9" y2="1">
       <stop offset="0" stop-color="#A9C39F"/><stop offset="1" stop-color="#5C8A57"/>
     </linearGradient>
-    <radialGradient id="hl" cx="0.25" cy="0.2" r="0.9">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.35"/>
-      <stop offset="0.6" stop-color="#ffffff" stop-opacity="0"/>
+    <radialGradient id="hl" cx="0.3" cy="0.22" r="0.95">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="0.65" stop-color="#ffffff" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="scrim" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#000" stop-opacity="0"/>
-      <stop offset="1" stop-color="#000" stop-opacity="0.45"/>
-    </linearGradient>
   </defs>
   <rect width="640" height="420" fill="url(#bg)"/>
   <rect width="640" height="420" fill="url(#hl)"/>
-  <rect x="245" y="70" width="150" height="150" rx="32" fill="#ffffff" fill-opacity="0.16"/>
-  <g transform="translate(260 85) scale(5)" fill="none" stroke="#264a22" stroke-opacity="0.9"
-     stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 3v18M4 7.5l8 4 8-4"/></g>
-  <rect x="0" y="250" width="640" height="170" fill="url(#scrim)"/>
-  <text x="40" y="70" font-family="Georgia, 'Times New Roman', serif" font-size="15"
-     letter-spacing="3" fill="#ffffff" fill-opacity="0.85">SHOPYLAND · SUSTAINABLE</text>
-  <text x="40" y="345" font-family="Georgia, 'Times New Roman', serif" font-weight="bold"
-     font-size="30" fill="#ffffff"><tspan x="40" dy="0">New Sustainable</tspan><tspan x="40" dy="30">Listing</tspan></text>
+  <circle cx="320" cy="205" r="118" fill="#ffffff" fill-opacity="0.14"/>
+  <g transform="translate(250 135) scale(7.5)" fill="none" stroke="#264a22" stroke-opacity="0.92"
+     stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zM12 3v18M4 7.5l8 4 8-4"/></g>
+  <text x="40" y="392" font-family="Georgia, 'Times New Roman', serif" font-size="14"
+     letter-spacing="4" fill="#ffffff" fill-opacity="0.7">SHOPYLAND</text>
 </svg>
