@@ -95,6 +95,19 @@ export interface DbActiveCargo {
   currentWeightFilledKg: number;
   capacityMaxKg: number;
   updatedAt: string;
+  /** Which ferry is currently loading. Bumps every time a container sails full. */
+  voyage: number;
+}
+
+/** "Island Ferry Container #003" -> 3 (defaults to 1). */
+export function voyageFromLabel(label: string): number {
+  const m = /#0*(\d+)/.exec(label || "");
+  return m ? Math.max(1, parseInt(m[1], 10)) : 1;
+}
+
+/** 3 -> "Island Ferry Container #003". */
+export function labelForVoyage(voyage: number): string {
+  return `Island Ferry Container #${String(voyage).padStart(3, "0")}`;
 }
 
 export type ProductWithOffers = Product & { offerCount: number; fromPrice: number };
@@ -205,9 +218,10 @@ class MemoryDb implements DbApi {
   private cargo: DbActiveCargo = {
     id: "ferry-001",
     label: "Island Ferry Container #001",
-    currentWeightFilledKg: 40,
+    currentWeightFilledKg: 64,
     capacityMaxKg: 80,
     updatedAt: new Date().toISOString(),
+    voyage: 1,
   };
 
   constructor() {
@@ -311,12 +325,29 @@ class MemoryDb implements DbApi {
   }
   async addCargoWeight(kg: number) {
     let next = this.cargo.currentWeightFilledKg + Math.max(0, kg);
-    if (next >= this.cargo.capacityMaxKg) next -= this.cargo.capacityMaxKg;
-    this.cargo = { ...this.cargo, currentWeightFilledKg: Number(next.toFixed(1)), updatedAt: new Date().toISOString() };
+    let voyage = this.cargo.voyage;
+    // Container full -> it sails; the next ferry starts loading with the overflow.
+    while (next >= this.cargo.capacityMaxKg) {
+      next -= this.cargo.capacityMaxKg;
+      voyage += 1;
+    }
+    this.cargo = {
+      ...this.cargo,
+      currentWeightFilledKg: Number(next.toFixed(1)),
+      voyage,
+      label: labelForVoyage(voyage),
+      updatedAt: new Date().toISOString(),
+    };
     return { ...this.cargo };
   }
   async resetCargo() {
-    this.cargo = { ...this.cargo, currentWeightFilledKg: 40, updatedAt: new Date().toISOString() };
+    this.cargo = {
+      ...this.cargo,
+      currentWeightFilledKg: 64,
+      voyage: 1,
+      label: labelForVoyage(1),
+      updatedAt: new Date().toISOString(),
+    };
   }
 }
 
@@ -480,7 +511,7 @@ class SupabaseDb implements DbApi {
       await sb.from("active_cargo").upsert({
         id: "ferry-001",
         label: "Island Ferry Container #001",
-        current_weight_filled_kg: 40,
+        current_weight_filled_kg: 64,
         capacity_max_kg: 80,
         updated_at: new Date().toISOString(),
       });
@@ -681,26 +712,40 @@ class SupabaseDb implements DbApi {
   async getCargo() {
     await this.ensureSeeded();
     const { data } = await sb.from("active_cargo").select("*").eq("id", "ferry-001").maybeSingle();
-    if (!data) return { id: "ferry-001", label: "Island Ferry Container #001", currentWeightFilledKg: 40, capacityMaxKg: 80, updatedAt: new Date().toISOString() };
+    if (!data)
+      return { id: "ferry-001", label: labelForVoyage(1), currentWeightFilledKg: 64, capacityMaxKg: 80, updatedAt: new Date().toISOString(), voyage: 1 };
     return {
       id: data.id,
       label: data.label,
       currentWeightFilledKg: Number(data.current_weight_filled_kg),
       capacityMaxKg: Number(data.capacity_max_kg),
       updatedAt: data.updated_at,
+      voyage: voyageFromLabel(data.label),
     };
   }
   async addCargoWeight(kg: number) {
     const cur = await this.getCargo();
     let next = cur.currentWeightFilledKg + Math.max(0, kg);
-    if (next >= cur.capacityMaxKg) next -= cur.capacityMaxKg;
+    let voyage = cur.voyage;
+    // Container full -> it sails; the next ferry starts loading with the overflow.
+    while (next >= cur.capacityMaxKg) {
+      next -= cur.capacityMaxKg;
+      voyage += 1;
+    }
     next = Number(next.toFixed(1));
+    const label = labelForVoyage(voyage);
     const updatedAt = new Date().toISOString();
-    await sb.from("active_cargo").update({ current_weight_filled_kg: next, updated_at: updatedAt }).eq("id", "ferry-001");
-    return { ...cur, currentWeightFilledKg: next, updatedAt };
+    await sb
+      .from("active_cargo")
+      .update({ current_weight_filled_kg: next, label, updated_at: updatedAt })
+      .eq("id", "ferry-001");
+    return { ...cur, currentWeightFilledKg: next, voyage, label, updatedAt };
   }
   async resetCargo() {
-    await sb.from("active_cargo").update({ current_weight_filled_kg: 40, updated_at: new Date().toISOString() }).eq("id", "ferry-001");
+    await sb
+      .from("active_cargo")
+      .update({ current_weight_filled_kg: 64, label: labelForVoyage(1), updated_at: new Date().toISOString() })
+      .eq("id", "ferry-001");
   }
 }
 

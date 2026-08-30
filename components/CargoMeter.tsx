@@ -9,6 +9,7 @@ interface Cargo {
   capacityMaxKg: number;
   fillPct: number;
   remainingKg: number;
+  voyage: number;
 }
 
 /**
@@ -18,7 +19,9 @@ interface Cargo {
 export function CargoMeter({ variant = "bar" }: { variant?: "bar" | "chip" }) {
   const [cargo, setCargo] = useState<Cargo | null>(null);
   const [bump, setBump] = useState(false);
+  const [sailed, setSailed] = useState(false);
   const prev = useRef<number | null>(null);
+  const prevVoyage = useRef<number | null>(null);
 
   useEffect(() => {
     let alive = true;
@@ -31,7 +34,13 @@ export function CargoMeter({ variant = "bar" }: { variant?: "bar" | "chip" }) {
             setBump(true);
             setTimeout(() => setBump(false), 900);
           }
+          if (prevVoyage.current != null && d.voyage > prevVoyage.current) {
+            // A container just filled and sailed — a fresh ferry is now loading.
+            setSailed(true);
+            setTimeout(() => setSailed(false), 3200);
+          }
           prev.current = d.currentWeightFilledKg;
+          prevVoyage.current = d.voyage;
           setCargo(d);
         })
         .catch(() => {});
@@ -52,8 +61,14 @@ export function CargoMeter({ variant = "bar" }: { variant?: "bar" | "chip" }) {
   if (variant === "chip") {
     return (
       <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#0f2b45]" title={cargo.label}>
-        <Ship className="h-3.5 w-3.5 text-[#2f8f92]" />
-        <span>Ferry {pct}%</span>
+        <Ship className={`h-3.5 w-3.5 text-[#2f8f92] ${sailed ? "animate-float" : ""}`} />
+        {sailed ? (
+          <span className="text-emerald-600">Ferry #{cargo.voyage} now loading</span>
+        ) : (
+          <span>
+            Ferry #{cargo.voyage} · {pct}%
+          </span>
+        )}
         <span className="relative block h-1.5 w-16 overflow-hidden rounded-full bg-slate-200">
           <span
             className="cargo-fill block h-full rounded-full transition-[width] duration-700 ease-out"
@@ -73,11 +88,17 @@ export function CargoMeter({ variant = "bar" }: { variant?: "bar" | "chip" }) {
     >
       <div className="flex items-center justify-between text-xs">
         <span className="inline-flex items-center gap-1.5 font-bold">
-          <Ship className="h-4 w-4 text-[#8fe0e2]" />
+          <Ship className={`h-4 w-4 text-[#8fe0e2] ${sailed ? "animate-float" : ""}`} />
           {cargo.label}
         </span>
         <span className={`font-bold ${tierColor}`}>{tier}</span>
       </div>
+
+      {sailed && (
+        <div className="mt-2 rounded-lg bg-emerald-500/15 px-2.5 py-1.5 text-[11px] font-bold text-emerald-200 pulse-once">
+          Container #{cargo.voyage - 1} filled up and sailed — ferry #{cargo.voyage} is now loading.
+        </div>
+      )}
 
       <div className="relative mt-2 h-3.5 overflow-hidden rounded-full bg-white/10">
         {/* tier markers at 60% and 85% */}
